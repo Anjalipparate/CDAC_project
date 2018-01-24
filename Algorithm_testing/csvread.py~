@@ -1,0 +1,7 @@
+import csv
+
+with open('text2018.01.23.13.12.59.csv') as file:
+	reader = csv.reader(file, delimiter=' ',quotechar=',',
+		quoting=csv.QUOTE_MINIMAL)
+	for column in reader:
+		print(column[0])
