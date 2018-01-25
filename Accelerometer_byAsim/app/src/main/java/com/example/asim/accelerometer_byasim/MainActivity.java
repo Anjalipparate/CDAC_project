@@ -29,6 +29,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     String filename;
+    String string;
     SensorManager sm = null;
     TextView textView1 = null;
     List list;
@@ -37,12 +38,20 @@ public class MainActivity extends AppCompatActivity {
         public void onAccuracyChanged(Sensor sensor, int accuracy) {}
         public void onSensorChanged(SensorEvent event) {
             float[] values = event.values;
+            String val;
+            if(string=="Zero")
+            {
+                val="0";
+            }
+            else {
+                val="1";
+            }
             textView1.setText("x: "+values[0]+"\ny: "+values[1]+"\nz: "+values[2]);
-            String string = String.valueOf(values[0])+" "+String.valueOf(values[1])+" "+String.valueOf(values[2])+"\n";
+            String string1 = String.valueOf(values[0])+" "+String.valueOf(values[1])+" "+String.valueOf(values[2])+" "+val+"\n";
             FileOutputStream fos = null;
             try {
                 fos = openFileOutput(filename, Context.MODE_APPEND);
-                fos.write(string.getBytes());
+                fos.write(string1.getBytes());
                 fos.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -77,21 +86,10 @@ public class MainActivity extends AppCompatActivity {
                 int id=radioGroup.getCheckedRadioButtonId();
                 RadioButton radioButton=(RadioButton)findViewById(id);
                 Toast.makeText(MainActivity.this, radioButton.getText(), Toast.LENGTH_SHORT).show();
-                String string="-----for "+radioButton.getText().toString()+" -----\n";
-                String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+                string=radioButton.getText().toString();
+                String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new java.util.Date());
                 FileOutputStream fos = null;
-                filename="text"+timeStamp+".csv";
-                try {
-                    fos = openFileOutput(filename, Context.MODE_PRIVATE);
-                    fos.write(string.getBytes());
-                    fos.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                }
+                filename=string+"-"+timeStamp+".csv";
                 sm.registerListener(sel, (Sensor) list.get(0), SensorManager.SENSOR_DELAY_NORMAL);
             }
         });
@@ -99,19 +97,6 @@ public class MainActivity extends AppCompatActivity {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String string = "----- end -----\n";
-                FileOutputStream fos = null;
-                try {
-                    fos = openFileOutput(filename, Context.MODE_APPEND);
-                    fos.write(string.getBytes());
-                    fos.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                }
                 sm.unregisterListener(sel);
             }
         });
