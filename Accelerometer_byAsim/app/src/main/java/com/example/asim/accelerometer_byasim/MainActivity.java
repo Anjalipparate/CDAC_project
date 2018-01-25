@@ -32,24 +32,30 @@ public class MainActivity extends AppCompatActivity {
     SensorManager sm = null;
     TextView textView1 = null;
     List list;
-    RadioGroup radioGroup;
+    RadioGroup radioGroup,radioGroup1;
     String string;
+    String check;
     SensorEventListener sel = new SensorEventListener(){
 
         public void onAccuracyChanged(Sensor sensor, int accuracy) {}
         public void onSensorChanged(SensorEvent event) {
             float[] values = event.values;
+            String string1=null;
             textView1.setText("x: "+values[0]+"\ny: "+values[1]+"\nz: "+values[2]);
-            String string1 = String.valueOf(values[0])+" "+String.valueOf(values[1])+" "+String.valueOf(values[2])+" "+string+"\n";
+            if(check.equals("Test"))
+            {
+                string1 = String.valueOf(values[0])+" "+String.valueOf(values[1])+" "+String.valueOf(values[2])+"\n";
+            }
+            else
+            {
+                string1 = String.valueOf(values[0])+" "+String.valueOf(values[1])+" "+String.valueOf(values[2])+" "+string+"\n";
+            }
             FileOutputStream fos = null;
             try {
                 fos = openFileOutput(filename, Context.MODE_APPEND);
                 fos.write(string1.getBytes());
                 fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
+            }  catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
             }
@@ -66,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         /* Get a SensorManager instance */
         textView1 = (TextView)findViewById(R.id.textView);
         radioGroup=(RadioGroup)findViewById(R.id.radio);
+        radioGroup1=(RadioGroup)findViewById(R.id.radio1);
         sm = (SensorManager)getSystemService(SENSOR_SERVICE);
         list = sm.getSensorList(Sensor.TYPE_ACCELEROMETER);
         /*if(list.size()>0){
@@ -77,12 +84,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int id=radioGroup.getCheckedRadioButtonId();
+                int id1=radioGroup1.getCheckedRadioButtonId();
                 RadioButton radioButton=(RadioButton)findViewById(id);
+                RadioButton radioButton1=(RadioButton)findViewById(id1);
                 string=radioButton.getText().toString();
+                check=radioButton1.getText().toString();
                 Toast.makeText(MainActivity.this,string, Toast.LENGTH_SHORT).show();
                 String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new java.util.Date());
                 FileOutputStream fos = null;
                 filename=string+"-"+timeStamp+".csv";
+
                 try {
                     fos = openFileOutput(filename, Context.MODE_PRIVATE);
                     fos.close();
@@ -90,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 catch (IOException e) {
                     e.printStackTrace();
                 }
+
                 sm.registerListener(sel, (Sensor) list.get(0), SensorManager.SENSOR_DELAY_NORMAL);
             }
         });
