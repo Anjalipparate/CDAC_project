@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                sm.registerListener(sel, (Sensor) list.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+                sm.registerListener(sel, (Sensor) list.get(0), SensorManager.SENSOR_DELAY_GAME);
             }
         });
 
