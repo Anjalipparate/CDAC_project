@@ -1,29 +1,21 @@
-package com.example.asim.accelerometer_byasim;
+package com.example.asim.gesticulate;
 
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.opencsv.CSVWriter;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -32,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     SensorManager sm = null;
     TextView textView1 = null;
     List list;
-    RadioGroup radioGroup,radioGroup1;
     String string;
     String check;
     SensorEventListener sel = new SensorEventListener(){
@@ -44,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
             textView1.setText("x: "+values[0]+"\ny: "+values[1]+"\nz: "+values[2]);
             if(check.equals("Test"))
             {
-                string1 = String.valueOf(values[0])+" "+String.valueOf(values[1])+" "+String.valueOf(values[2])+"\n";
+                string1 = String.valueOf(values[0])+" "+String.valueOf(values[1])+" "+String.valueOf(values[2])+" \n";
             }
             else
             {
-                string1 = String.valueOf(values[0])+" "+String.valueOf(values[1])+" "+String.valueOf(values[2])+" "+string+"\n";
+                string1 = String.valueOf(values[0])+" "+String.valueOf(values[1])+" "+String.valueOf(values[2])+" "+string+" \n";
             }
             FileOutputStream fos = null;
             try {
@@ -62,14 +53,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button start= (Button) findViewById(R.id.button);
-        Button stop= (Button) findViewById(R.id.button2);
+        final Button stop= (Button) findViewById(R.id.button2);
         /* Get a SensorManager instance */
+        final RadioGroup radioGroup,radioGroup1;
         textView1 = (TextView)findViewById(R.id.textView);
         radioGroup=(RadioGroup)findViewById(R.id.radio);
         radioGroup1=(RadioGroup)findViewById(R.id.radio1);
@@ -94,13 +85,13 @@ public class MainActivity extends AppCompatActivity {
                 FileOutputStream fos = null;
                 filename=string+"-"+timeStamp+".csv";
 
-                try {
-                    fos = openFileOutput(filename, Context.MODE_PRIVATE);
-                    fos.close();
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    try {
+                        fos = openFileOutput(filename, Context.MODE_PRIVATE);
+                        fos.close();
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 sm.registerListener(sel, (Sensor) list.get(0), SensorManager.SENSOR_DELAY_GAME);
             }
@@ -111,6 +102,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view)
             {
                 sm.unregisterListener(sel);
+            }
+        });
+        Button send=(Button)findViewById(R.id.button3);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               new Client("/data/data/com.example.asim.accelerometer_byasim/files/0-2018-01-29-12-15-45.csv").createConnection();
+                Toast.makeText(MainActivity.this, getFilesDir().toString()+"1-2018-01-30-18-01-47.csv", Toast.LENGTH_SHORT).show();
             }
         });
     }

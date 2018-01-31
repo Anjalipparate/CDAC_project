@@ -1,4 +1,4 @@
-package com.example.asim.accelerometer_byasim;
+package com.example.asim.gesticulate;
 
 import org.junit.Test;
 
